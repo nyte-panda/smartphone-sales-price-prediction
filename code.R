@@ -1,6 +1,7 @@
 library(dplyr)
 library(psych)
 library(readxl)
+library(car)
 
 #read data
 df <- read.csv("data/smartphones.csv")
@@ -86,5 +87,4 @@ plot(model)
 
 #testing for multicollinearity
 
-library(car)
 vif(model)
