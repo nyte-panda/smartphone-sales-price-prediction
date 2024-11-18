@@ -77,3 +77,9 @@ plot(model$residuals)
 
 par(mfrow = c(2, 2))
 plot(model)
+
+#Stepwise model
+
+stepwise_model <- step(model, direction = "both", trace = 1)
+stepwise_model
+
