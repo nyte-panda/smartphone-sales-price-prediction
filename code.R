@@ -83,3 +83,8 @@ plot(model$residuals)
 
 par(mfrow = c(2, 2))
 plot(model)
+
+#testing for multicollinearity
+
+library(car)
+vif(model)
