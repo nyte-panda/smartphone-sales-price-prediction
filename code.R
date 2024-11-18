@@ -69,6 +69,12 @@ Model_Interaction <- as.numeric(df$Model) * df$RAM
 model <- lm(`Final Price` ~ RAM + Storage + RAM_Storage + Brand_RAM_Interaction + Model_Interaction, data = df)
 summary(model)
 
+#Stepwise model
+
+stepwise_model <- step(model, direction = "both", trace = 1)
+stepwise_model
+
+
 #Plot the residuals 
 
 plot(model$residuals)
@@ -77,9 +83,3 @@ plot(model$residuals)
 
 par(mfrow = c(2, 2))
 plot(model)
-
-#Stepwise model
-
-stepwise_model <- step(model, direction = "both", trace = 1)
-stepwise_model
-
