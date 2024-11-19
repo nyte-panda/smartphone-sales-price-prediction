@@ -49,10 +49,22 @@ Brand_RAM_Interaction <- as.numeric(df$Brand) * df$RAM
 Model_Interaction <- as.numeric(df$Model) * df$RAM
 
 # Model Building
-model <- lm(Final.Price ~ RAM + Storage + RAM_Storage + Brand_RAM_Interaction + Model_Interaction, data = df)
-summary(model)
+null_model <- lm(Final.Price ~ 1, data = df)
+summary(null_model)
 
-stepwise_model <- step(model, direction = "both", trace = 1)
+full_model <- lm(Final.Price ~ RAM + Storage + RAM_Storage + Brand_RAM_Interaction + Model_Interaction, data = df)
+summary(full_model)
+
+# Forward Selection
+forward_model <- step(null_model, direction = "forward", scope = formula(full_model))
+summary(forward_model)
+
+# Backward Selection
+backward_model <- step(full_model, direction = "backward", trace = 1)
+summary(backward_model)
+
+# Stepwise Selection
+stepwise_model <- step(null_model, direction = "both", scope = formula(full_model), trace =1)
 summary(stepwise_model)
 
 # Plot the residuals 
