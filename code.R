@@ -20,7 +20,7 @@ df <- df %>%
   )
 
 # Exploratory Data Analysis (EDA)
-# Distribution of Final Pricea
+# Distribution of Final Price
 hist(df$Final.Price, main = "Final Price Distribution", xlab = "Final Price", col = "lightblue") # Most prices fall below 500
 
 # Boxplot : Final Price by Brand
