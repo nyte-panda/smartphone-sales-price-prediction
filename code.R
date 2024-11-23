@@ -107,7 +107,7 @@ plot(stepwise_model$residuals,
 par(mfrow = c(2, 2))
 plot(stepwise_model)
 
-# Testing for multicollinearity
+# Testing for Multicollinearity
 vif_results <- vif(stepwise_model, type ="predictor")
 print(vif_results)
   
