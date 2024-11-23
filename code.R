@@ -68,10 +68,10 @@ summary(ram_model_annova) # Evidence that RAM and Model are dependent
 # Feature Engineering
 df <- df %>%
   mutate(
-    free_YES = if_else(Free == "Yes", 1, 0),
-    RAM_Storage = RAM * Storage,
-    free_storage_Interaction = free_YES * Storage,
-    free_RAM_Interaction = free_YES * RAM
+    free_yes = if_else(Free == "Yes", 1, 0),
+    ram_storage = RAM * Storage,
+    free_storage_interaction = free_yes * Storage,
+    free_ram_interaction = free_yes * RAM
   )
 
 # Model Building
@@ -79,7 +79,7 @@ df <- df %>%
 null_model <- lm(Final.Price ~ 1, data = df)
 summary(null_model)
 
-full_model <- lm(Final.Price ~ RAM + Storage+ RAM * Storage + free_YES * Storage + free_YES * RAM, data = df) 
+full_model <- lm(Final.Price ~ RAM + Storage + ram_storage + free_storage_interaction + free_ram_interaction, data = df) 
 summary(full_model)
 
 # Forward Selection
@@ -110,7 +110,7 @@ plot(stepwise_model)
 # Testing for Multicollinearity
 vif_results <- vif(stepwise_model, type ="predictor")
 print(vif_results)
-  
+
 # Q-Q Plot for Residual Normality
 qqnorm(stepwise_model$residuals, main = "Q-Q Plot of Residuals")
 qqline(stepwise_model$residuals, col = "red")
