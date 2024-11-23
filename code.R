@@ -49,7 +49,7 @@ df$free_YES = if_else(df$Free == "Yes", 1,0)
 df$RAM_Storage <- df$RAM * df$Storage
 df$free_storage_Interaction <- df$free_YES * df$Storage
 df$free_RAM_Interaction <- df$free_YES * df$RAM
-df
+
 # Model Building
 null_model <- lm(Final.Price ~ 1, data = df)
 summary(null_model)
