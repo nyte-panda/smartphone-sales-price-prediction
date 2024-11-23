@@ -1,5 +1,5 @@
 # Load libraries
-library(dplyr); library(psych); library(readxl); library(car); library(rstatix); library(caret)
+library(dplyr); library(psych); library(readxl); library(car); library(caret)
 
 # Data preparation
 df <- read.csv("data/smartphones.csv")
