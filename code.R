@@ -1,12 +1,12 @@
 # Load Required Libraries
 library(dplyr); library(psych); library(readxl); library(car); library(caret)
 
-# Data preparation
+# Data Preparation
 df <- read.csv("data/smartphones.csv")
 df <- na.omit(df)
 
 
-# Convert Variables to Approprate Data Types 
+# Convert Variables to Appropriate Data Types 
 df <- df %>% 
   mutate(
     Smartphone = as.factor(Smartphone),
@@ -63,7 +63,7 @@ summary(ram_brand_annova)
 
 # RAM vs. Model
 ram_model_annova = aov(RAM ~ Model, data = df)
-summary(ram_model_annova) ## Evidence that RAM and Model are dependent
+summary(ram_model_annova) # Evidence that RAM and Model are dependent
 
 # Feature Engineering
 df <- df %>%
