@@ -28,7 +28,7 @@ boxplot(df$Final.Price ~ df$Brand,
         main = "Final Price by Brand", 
         xlab = "Brand", 
         ylab = "Final Price",
-        col = "lightgreen") 
+        col = "grey") 
 
 # Frequency of RAM
 ram_prob_table = table(df$RAM)/ sum(table(df$RAM))
