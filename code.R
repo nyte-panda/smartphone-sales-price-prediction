@@ -28,7 +28,7 @@ boxplot(df$Final.Price ~ df$Brand,
         main = "Final Price by Brand", 
         xlab = "Brand", 
         ylab = "Final Price",
-        col = "grey") 
+        col = "grey") # Samsung has the highest median price
 
 # Frequency of RAM
 ram_prob_table = table(df$RAM)/ sum(table(df$RAM))
@@ -58,12 +58,12 @@ print(chi_square_results) # Evidence that Brand and Free are dependent
 
 # ANOVA Tests
 # RAM vs Brand
-ram_brand_annova <- aov(RAM ~ Brand, data = df)
-summary(ram_brand_annova) 
+ram_brand_anova <- aov(RAM ~ Brand, data = df)
+summary(ram_brand_anova) 
 
 # RAM vs. Model
-ram_model_annova = aov(RAM ~ Model, data = df)
-summary(ram_model_annova) # Evidence that RAM and Model are dependent
+ram_model_anova = aov(RAM ~ Model, data = df)
+summary(ram_model_anova) # Evidence that RAM and Model are dependent
 
 # Feature Engineering
 df <- df %>%
