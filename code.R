@@ -1,66 +1,89 @@
-# Load libraries
+# Load Required Libraries
 library(dplyr); library(psych); library(readxl); library(car); library(caret)
 
-# Data preparation
+# Data Preparation
 df <- read.csv("data/smartphones.csv")
 df <- na.omit(df)
 
-# Converting variables to appropriate data types
 
-df$Smartphone <- as.factor(df$Smartphone)
-df$Brand <- as.factor(df$Brand)
-df$Model <- as.factor(df$Model)
-df$Color <- as.factor(df$Color)
-df$Storage <- as.numeric(df$Storage)
-df$Final.Price <- as.numeric(df$Final.Price)
-df$RAM <- as.numeric(df$RAM)
-df$Free <- as.factor(df$Free)
+# Convert Variables to Appropriate Data Types 
+df <- df %>% 
+  mutate(
+    Smartphone = as.factor(Smartphone),
+    Brand = as.factor(Brand),
+    Model = as.factor(Model),
+    Color = as.factor(Color),
+    Storage = as.numeric(Storage),
+    Final.Price = as.numeric(Final.Price),
+    RAM = as.numeric(RAM),
+    Free = as.factor(Free)
+  )
 
-####EDA####
-final_price_hist = hist(df$Final.Price, main = "Final Price Distribution") ## most price falls below 500
-boxplot(df$Final.Price~df$Brand, main = "Final Price by brand")
-# frequency of RAM
+# Exploratory Data Analysis (EDA)
+# Distribution of Final Price
+hist(df$Final.Price, main = "Final Price Distribution", xlab = "Final Price", col = "lightblue") # Most prices fall below 500
+
+# Boxplot : Final Price by Brand
+boxplot(df$Final.Price ~ df$Brand, 
+        main = "Final Price by Brand", 
+        xlab = "Brand", 
+        ylab = "Final Price",
+        col = "grey") # Samsung has the highest median price
+
+# Frequency of RAM
 ram_prob_table = table(df$RAM)/ sum(table(df$RAM))
-barplot(ram_prob_table,main = "Distribution of RAM size as % of total") ## 4s and 8s RAm are mos prominent
-## frequency of Storage
+barplot(ram_prob_table, 
+        main = "Distribution of RAM size as % of Total", 
+        xlab = "RAM", 
+        ylab = "Proportion",
+        col = "green") # Most phones have 4GB and 8GB of RAM
+
+# Frequency of Storage
 storage_prob_table = table(df$Storage)/ sum(table(df$Storage))
-barplot(storage_prob_table,main = "Distribution of Storage size as % of total") ## 128gbs are most famous
+barplot(storage_prob_table, 
+        main = "Distribution of Storage Size as % of Total", 
+        xlab = "Storage", 
+        ylab = "Proportion",
+        col = "lightyellow") # Most phones have 128GB of Storage
 
-### CORR TESTING
-## heatmap of continuous var
-cor_mat(df %>%select(RAM, Storage, Final.Price), method = "pearson") 
-# high corr between RAM and Storage  => interactions term?
+# Correlation Testing 
+# Pearson Correlation Matrix
+correlation_matrix <- cor_mat(df %>% select(RAM, Storage, Final.Price), method = "pearson")
+print(correlation_matrix) # High correlation betwen RAM and Storage 
 
-# Chi-squares for corr between "Free" and "Brand"
-contin_table_brand_free = table(df%>% select(Brand, Free))
-chisq.test(contin_table_brand_free) ## Reject Ho, there is enough evidence to say that brand and free are dependent
+# Chi-Square Test: Dependency Between Free and Brand
+contingency_table <- table(df$Brand, df$Free)
+chi_square_results <- chisq.test(contingency_table)
+print(chi_square_results) # Evidence that Brand and Free are dependent
 
-# ANNOVA test between RAM and Brand
-ram_brand_annova = aov(df$RAM~factor(df$Brand))
-summary.aov(ram_brand_annova)
+# ANOVA Tests
+# RAM vs Brand
+ram_brand_anova <- aov(RAM ~ Brand, data = df)
+summary(ram_brand_anova) 
 
-# ANNOVA test between RAM and Model 
-ram_model_annova = aov(df$RAM~factor(df$Model))
-summary.aov(ram_model_annova) ## Reject Ho, there is enough evidence to say that brand and model are dependent 
+# RAM vs. Model
+ram_model_anova = aov(RAM ~ Model, data = df)
+summary(ram_model_anova) # Evidence that RAM and Model are dependent
 
-# Feature Engineering & Regression
-##adding features
-df$free_YES = if_else(df$Free == "Yes", 1,0)
-df$RAM_Storage <- df$RAM * df$Storage
-df$free_storage_Interaction <- df$free_YES * df$Storage
-df$free_RAM_Interaction <- df$free_YES * df$RAM
+# Feature Engineering
+df <- df %>%
+  mutate(
+    free_yes = if_else(Free == "Yes", 1, 0),
+    ram_storage = RAM * Storage,
+    free_storage_interaction = free_yes * Storage,
+    free_ram_interaction = free_yes * RAM
+  )
 
 # Model Building
+# Null and Full Models
 null_model <- lm(Final.Price ~ 1, data = df)
 summary(null_model)
 
-#full model
-full_model <- lm(Final.Price ~ RAM + Storage+ RAM*Storage + free_YES*Storage + free_YES*RAM, data = df) 
-##why not add color +brand ==> too much values, does not provide insights too model 
+full_model <- lm(Final.Price ~ RAM + Storage + ram_storage + free_storage_interaction + free_ram_interaction, data = df) 
 summary(full_model)
 
 # Forward Selection
-forward_model <- step(null_model, direction = "forward", scope = formula(full_model))
+forward_model <- step(null_model, direction = "forward", scope = formula(full_model, trace = 1))
 summary(forward_model)
 
 # Backward Selection
@@ -71,17 +94,23 @@ summary(backward_model)
 stepwise_model <- step(null_model, direction = "both", scope = formula(full_model), trace =1)
 summary(stepwise_model)
 
+# Diagnostics
+# Residuals Plot 
+plot(stepwise_model$residuals, 
+     main = "residuals of model",
+     xlab = "Index",
+     ylab = "Residuals",
+     col = "purple",
+     pch = 20)
 
-# Plot the residuals 
-plot(stepwise_model$residuals, main = "residuals of model")
-
-# Plot diagnostic plot
+# Diagnositic Plots
 par(mfrow = c(2, 2))
 plot(stepwise_model)
 
-# Testing for multicollinearity
-vif(stepwise_model, type ="predictor")
-?
-# Q-Q plot for normality of residuals
-qqnorm(stepwise_model$residuals)
+# Testing for Multicollinearity
+vif_results <- vif(stepwise_model, type ="predictor")
+print(vif_results)
+
+# Q-Q Plot for Residual Normality
+qqnorm(stepwise_model$residuals, main = "Q-Q Plot of Residuals")
 qqline(stepwise_model$residuals, col = "red")
