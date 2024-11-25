@@ -1,5 +1,5 @@
 # Load Required Libraries
-library(dplyr); library(psych); library(readxl); library(car); library(caret)
+library(dplyr); library(psych); library(readxl); library(car); library(caret); library(rstatix)
 
 # Data Preparation
 df <- read.csv("data/smartphones.csv")
@@ -69,9 +69,6 @@ summary(ram_model_anova) # Evidence that RAM and Model are dependent
 df <- df %>%
   mutate(
     free_yes = if_else(Free == "Yes", 1, 0),
-    ram_storage = RAM * Storage,
-    free_storage_interaction = free_yes * Storage,
-    free_ram_interaction = free_yes * RAM
   )
 
 # Model Building
@@ -79,7 +76,7 @@ df <- df %>%
 null_model <- lm(Final.Price ~ 1, data = df)
 summary(null_model)
 
-full_model <- lm(Final.Price ~ RAM + Storage + ram_storage + free_storage_interaction + free_ram_interaction, data = df) 
+full_model <- lm(Final.Price ~ RAM + Storage + free_yes + RAM *Storage + free_yes * Storage + free_yes*RAM, data = df) 
 summary(full_model)
 
 # Forward Selection
@@ -103,7 +100,7 @@ plot(stepwise_model$residuals,
      col = "purple",
      pch = 20)
 
-# Diagnositic Plots
+# Diagnositic Plots 
 par(mfrow = c(2, 2))
 plot(stepwise_model)
 
