@@ -1,8 +1,8 @@
 # Load Required Libraries
-library(dplyr); library(psych); library(readxl); library(car); library(caret)
+library(dplyr); library(psych); library(readxl); library(car); library(caret); library(rstatix)
 
 # Data Preparation
-df <- read.csv("data/smartphones.csv")
+df <- read.csv("Library/CloudStorage/OneDrive-YorkUniversity/4th Year/ADMS 4370/Final Project/smart-phone-sales-price-prediction/data/smartphones.csv")
 df <- na.omit(df)
 
 
@@ -103,7 +103,7 @@ plot(stepwise_model$residuals,
      col = "purple",
      pch = 20)
 
-# Diagnositic Plots
+# Diagnositic Plots 
 par(mfrow = c(2, 2))
 plot(stepwise_model)
 

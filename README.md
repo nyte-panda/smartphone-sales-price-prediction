@@ -22,7 +22,6 @@ This repository contains a comprehensive analysis of a dataset focused on mobile
 - `data/`: Contains the raw and processed datasets.
 - `code.r/`: R scripts for data analysis and model building.
 - `report/`: Final report document.
-- `presentation/`: Slides for the class presentation.
 - `README.md`: Project overview and guidance.
 
 ## **Instructions**
