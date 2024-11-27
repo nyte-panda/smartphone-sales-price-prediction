@@ -69,7 +69,7 @@ summary(ram_model_anova) # Evidence that RAM and Model are dependent
 df <- df %>%
   mutate(
     free_yes = if_else(Free == "Yes", 1, 0),
-    ram_storage = RAM * Storage,
+    ram_storage_interaction = RAM * Storage,
     free_storage_interaction = free_yes * Storage,
     free_ram_interaction = free_yes * RAM
   )
@@ -79,7 +79,7 @@ df <- df %>%
 null_model <- lm(Final.Price ~ 1, data = df)
 summary(null_model)
 
-full_model <- lm(Final.Price ~ RAM + Storage + ram_storage + free_storage_interaction + free_ram_interaction, data = df) 
+full_model <- lm(Final.Price ~ RAM + Storage + free_yes + ram_storage_interaction + free_storage_interaction + free_ram_interaction, data = df) 
 summary(full_model)
 
 # Forward Selection
