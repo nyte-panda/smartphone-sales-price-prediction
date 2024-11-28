@@ -2,7 +2,7 @@
 library(dplyr); library(psych); library(readxl); library(car); library(caret); library(rstatix)
 
 # Data Preparation
-df <- read.csv("Library/CloudStorage/OneDrive-YorkUniversity/4th Year/ADMS 4370/Final Project/smart-phone-sales-price-prediction/data/smartphones.csv")
+df <- read.csv("data/smartphones.csv")
 df <- na.omit(df)
 
 
