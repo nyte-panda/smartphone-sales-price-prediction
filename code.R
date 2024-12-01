@@ -1,4 +1,4 @@
-# Load Required Librar
+# Load Required Libraries
 library(dplyr); library(psych); library(readxl); library(car); library(caret); library(rstatix)
 
 # Data Preparation
